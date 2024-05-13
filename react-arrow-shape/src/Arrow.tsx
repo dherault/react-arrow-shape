@@ -8,11 +8,12 @@ type ArrowProps = {
   curveX?: number
   curveY?: number
   color?: string
+  strokeWidth?: number | string
+  tipSize?: number
 }
 
 const MIN_SVG_SIZE = 32
 const SVG_PADDING = 0
-const ARROW_TIP_LENGTH = 12
 
 function Arrow({
   fromX,
@@ -22,6 +23,8 @@ function Arrow({
   curveX = 0.5,
   curveY = 0.5,
   color = 'black',
+  strokeWidth = 1,
+  tipSize = 12,
 }: ArrowProps) {
   const { width, height, paddingTop, paddingLeft, topLeft, bottomRight } = useMemo(() => {
     const minX = Math.min(fromX, toX)
@@ -88,10 +91,10 @@ function Arrow({
   // Arrow tip
   const { cX, cY, dX, dY } = useMemo(() => {
     const angle = Math.atan2(bY - curveY * height, bX - curveX * width)
-    const cX = bX + ARROW_TIP_LENGTH * Math.cos(angle + Math.PI / 4 + Math.PI / 2)
-    const cY = bY + ARROW_TIP_LENGTH * Math.sin(angle + Math.PI / 4 + Math.PI / 2)
-    const dX = bX + ARROW_TIP_LENGTH * Math.cos(angle - Math.PI / 4 - Math.PI / 2)
-    const dY = bY + ARROW_TIP_LENGTH * Math.sin(angle - Math.PI / 4 - Math.PI / 2)
+    const cX = bX + tipSize * Math.cos(angle + Math.PI / 4 + Math.PI / 2)
+    const cY = bY + tipSize * Math.sin(angle + Math.PI / 4 + Math.PI / 2)
+    const dX = bX + tipSize * Math.cos(angle - Math.PI / 4 - Math.PI / 2)
+    const dY = bY + tipSize * Math.sin(angle - Math.PI / 4 - Math.PI / 2)
 
     return {
       cX,
@@ -102,6 +105,7 @@ function Arrow({
   }, [
     curveX,
     curveY,
+    tipSize,
     width,
     height,
     bX,
@@ -113,10 +117,10 @@ function Arrow({
       <div
         style={{
           position: 'absolute',
-          top: fromY - 2,
-          left: fromX - 2,
-          width: 4,
-          height: 4,
+          top: fromY - 4,
+          left: fromX - 4,
+          width: 8,
+          height: 8,
           backgroundColor: 'red',
           borderRadius: '50%',
         }}
@@ -124,10 +128,10 @@ function Arrow({
       <div
         style={{
           position: 'absolute',
-          top: toY - 2,
-          left: toX - 2,
-          width: 4,
-          height: 4,
+          top: toY - 4,
+          left: toX - 4,
+          width: 8,
+          height: 8,
           backgroundColor: 'blue',
           borderRadius: '50%',
         }}
@@ -147,13 +151,13 @@ function Arrow({
           d={`M ${aX} ${aY} Q ${curveX * (bottomRight.x - topLeft.x) + topLeft.x} ${curveY * (bottomRight.y - topLeft.y) + topLeft.y}, ${bX} ${bY}`}
           fill="none"
           stroke={color}
-          strokeWidth={2}
+          strokeWidth={strokeWidth}
         />
         <path
           d={`M ${cX} ${cY} L ${bX} ${bY} L ${dX} ${dY}`}
           fill="none"
           stroke={color}
-          strokeWidth={2}
+          strokeWidth={strokeWidth}
         />
         <circle
           cx={curveX * (bottomRight.x - topLeft.x) + topLeft.x}
@@ -164,25 +168,25 @@ function Arrow({
         <circle
           cx={aX}
           cy={aY}
-          r={5}
+          r={10}
           fill="red"
         />
         <circle
           cx={bX}
           cy={bY}
-          r={2}
+          r={10}
           fill="blue"
         />
         <circle
           cx={cX}
           cy={cY}
-          r={2}
+          r={10}
           fill="green"
         />
         <circle
           cx={dX}
           cy={dY}
-          r={2}
+          r={10}
           fill="green"
         />
       </svg>
