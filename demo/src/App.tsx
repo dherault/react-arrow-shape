@@ -2,7 +2,7 @@ import Arrow from 'react-arrow-shape'
 
 function App() {
   return (
-    <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
+    <>
       <Arrow
         fromX={200}
         fromY={200}
@@ -21,7 +21,7 @@ function App() {
         toX={800}
         toY={400}
       />
-    </div>
+    </>
   )
 }
 

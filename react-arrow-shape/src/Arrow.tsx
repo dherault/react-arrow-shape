@@ -20,8 +20,8 @@ function Arrow({
   fromY,
   toX,
   toY,
-  curveX = 0.5,
-  curveY = 0.5,
+  curveX,
+  curveY,
   color = 'black',
   strokeWidth = 1,
   tipSize = 12,
@@ -63,7 +63,7 @@ function Arrow({
     const bX = toX
     const bY = toY
     // Arrow tip
-    const angle = Math.atan2(bY - curveY * height, bX - curveX * width)
+    const angle = Math.atan2(bY - (curveY ?? 0) * height, bX - (curveX ?? 0) * width)
     const cX = bX + tipSize * Math.cos(angle + Math.PI / 4 + Math.PI / 2)
     const cY = bY + tipSize * Math.sin(angle + Math.PI / 4 + Math.PI / 2)
     const dX = bX + tipSize * Math.cos(angle - Math.PI / 4 - Math.PI / 2)
@@ -129,11 +129,13 @@ function Arrow({
           left: topLeft.x,
           width: bottomRight.x - topLeft.x,
           height: bottomRight.y - topLeft.y,
-          border: '1px solid black',
+          border: '1px solid lightgrey',
         }}
       >
         <path
-          d={`M ${aX} ${aY} Q ${curveX * (bottomRight.x - topLeft.x) + topLeft.x} ${curveY * (bottomRight.y - topLeft.y) + topLeft.y}, ${bX} ${bY}`}
+          d={typeof curveX !== 'undefined' && typeof curveY !== 'undefined'
+            ? `M ${aX} ${aY} Q ${curveX} ${curveY}, ${bX} ${bY}`
+            : `M ${aX} ${aY} L ${bX} ${bY}`}
           fill="none"
           stroke={color}
           strokeWidth={strokeWidth}
@@ -144,12 +146,14 @@ function Arrow({
           stroke={color}
           strokeWidth={strokeWidth}
         />
-        <circle
-          cx={curveX * (bottomRight.x - topLeft.x) + topLeft.x}
-          cy={curveY * (bottomRight.y - topLeft.y) + topLeft.y}
-          r={2}
-          fill="orange"
-        />
+        {typeof curveX !== 'undefined' && typeof curveY !== 'undefined' && (
+          <circle
+            cx={curveX}
+            cy={curveY}
+            r={8}
+            fill="orange"
+          />
+        )}
         <circle
           cx={aX}
           cy={aY}
