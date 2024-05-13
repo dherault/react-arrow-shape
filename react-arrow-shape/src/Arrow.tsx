@@ -10,10 +10,10 @@ type ArrowProps = {
   color?: string
   strokeWidth?: number | string
   tipSize?: number
+  padding?: number
 }
 
 const MIN_SVG_SIZE = 32
-const SVG_PADDING = 0
 
 function Arrow({
   fromX,
@@ -25,8 +25,20 @@ function Arrow({
   color = 'black',
   strokeWidth = 1,
   tipSize = 12,
+  padding = 0,
 }: ArrowProps) {
-  const { width, height, paddingTop, paddingLeft, topLeft, bottomRight } = useMemo(() => {
+  const {
+    topLeft,
+    bottomRight,
+    aX,
+    aY,
+    bX,
+    bY,
+    cX,
+    cY,
+    dX,
+    dY,
+  } = useMemo(() => {
     const minX = Math.min(fromX, toX)
     const minY = Math.min(fromY, toY)
     const maxX = Math.max(fromX, toX)
@@ -45,11 +57,19 @@ function Arrow({
       paddingTop = MIN_SVG_SIZE / 2
     }
 
+    // Arrow body
+    const aX = fromX
+    const aY = fromY
+    const bX = toX
+    const bY = toY
+    // Arrow tip
+    const angle = Math.atan2(bY - curveY * height, bX - curveX * width)
+    const cX = bX + tipSize * Math.cos(angle + Math.PI / 4 + Math.PI / 2)
+    const cY = bY + tipSize * Math.sin(angle + Math.PI / 4 + Math.PI / 2)
+    const dX = bX + tipSize * Math.cos(angle - Math.PI / 4 - Math.PI / 2)
+    const dY = bY + tipSize * Math.sin(angle - Math.PI / 4 - Math.PI / 2)
+
     return {
-      width,
-      height,
-      paddingTop,
-      paddingLeft,
       topLeft: {
         x: minX - paddingLeft,
         y: minY - paddingTop,
@@ -58,58 +78,23 @@ function Arrow({
         x: Math.max(maxX, minX + width - paddingLeft),
         y: Math.max(maxY, minY + height - paddingTop),
       },
-    }
-  }, [
-    fromX,
-    fromY,
-    toX,
-    toY,
-  ])
-
-  // Arrow body
-  const { aX, aY, bX, bY } = useMemo(() => {
-    const aX = fromX - paddingLeft
-    const aY = fromY - paddingTop
-    const bX = toX - paddingLeft
-    const bY = toY - paddingTop
-
-    return {
       aX,
       aY,
       bX,
       bY,
-    }
-  }, [
-    fromX,
-    fromY,
-    toX,
-    toY,
-    paddingTop,
-    paddingLeft,
-  ])
-
-  // Arrow tip
-  const { cX, cY, dX, dY } = useMemo(() => {
-    const angle = Math.atan2(bY - curveY * height, bX - curveX * width)
-    const cX = bX + tipSize * Math.cos(angle + Math.PI / 4 + Math.PI / 2)
-    const cY = bY + tipSize * Math.sin(angle + Math.PI / 4 + Math.PI / 2)
-    const dX = bX + tipSize * Math.cos(angle - Math.PI / 4 - Math.PI / 2)
-    const dY = bY + tipSize * Math.sin(angle - Math.PI / 4 - Math.PI / 2)
-
-    return {
       cX,
       cY,
       dX,
       dY,
     }
   }, [
+    fromX,
+    fromY,
+    toX,
+    toY,
     curveX,
     curveY,
     tipSize,
-    width,
-    height,
-    bX,
-    bY,
   ])
 
   return (
@@ -137,7 +122,7 @@ function Arrow({
         }}
       />
       <svg
-        viewBox={`${topLeft.x - SVG_PADDING} ${topLeft.y - SVG_PADDING} ${bottomRight.x + 2 * SVG_PADDING} ${bottomRight.y + 2 * SVG_PADDING}`}
+        viewBox={`${topLeft.x - padding} ${topLeft.y - padding} ${bottomRight.x + 2 * padding} ${bottomRight.y + 2 * padding}`}
         style={{
           position: 'absolute',
           top: topLeft.y,
@@ -168,25 +153,25 @@ function Arrow({
         <circle
           cx={aX}
           cy={aY}
-          r={10}
+          r={8}
           fill="red"
         />
         <circle
           cx={bX}
           cy={bY}
-          r={10}
+          r={8}
           fill="blue"
         />
         <circle
           cx={cX}
           cy={cY}
-          r={10}
+          r={8}
           fill="green"
         />
         <circle
           cx={dX}
           cy={dY}
-          r={10}
+          r={8}
           fill="green"
         />
       </svg>
