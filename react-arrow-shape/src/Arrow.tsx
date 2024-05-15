@@ -52,7 +52,6 @@ function Arrow({
       width = MIN_SVG_SIZE
       paddingLeft = MIN_SVG_SIZE / 2
     }
-
     if (height < MIN_SVG_SIZE) {
       height = MIN_SVG_SIZE
       paddingTop = MIN_SVG_SIZE / 2
