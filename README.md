@@ -1,4 +1,4 @@
-# React Arrown Shape
+# React Arrow Shape
 
 An arrow React component rendered in Canvas.
 
