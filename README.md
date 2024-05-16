@@ -1,6 +1,10 @@
 # React Arrown Shape
 
-An arrow React component rendered in Canvas
+An arrow React component rendered in Canvas.
+
+Will be absolutly positioned. Make sure to place it in a `relative` container.
+
+Can contain a curve point.
 
 ## Installation
 
