@@ -19,7 +19,7 @@ function Arrow(props: ArrowOptions) {
         className={props.className}
         style={props.style}
       />
-      <div
+      {/* <div
         style={{
           position: 'absolute',
           top: props.fromY - 4,
@@ -51,7 +51,7 @@ function Arrow(props: ArrowOptions) {
           backgroundColor: 'green',
           borderRadius: '50%',
         }}
-      />
+      /> */}
     </>
   )
 }

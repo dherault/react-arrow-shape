@@ -3,13 +3,14 @@ import type { ArrowOptions } from './types'
 
 const DEFAULT_PADDING = 16
 const DEFAULT_TIP_SIZE = 12
+const DEFAULT_TIP_OFFSET = 0
 const DEFAULT_STROKE_WIDTH = 1
 const DEFAULT_COLOR = 'black'
-const ARROW_ANGLE = Math.PI / 4 + Math.PI / 2
+const DEFAULT_CAP = 'round'
+const DEFAULT_TIP_ANGLE = Math.PI / 4 + Math.PI / 2
 
 function handleCanvas(canvas: HTMLCanvasElement, options: ArrowOptions) {
   const _ = canvas.getContext('2d')!
-
   const dpr = getCanvasDpr(_)
 
   const minX = Math.min(options.fromX, options.toX)
@@ -20,23 +21,26 @@ function handleCanvas(canvas: HTMLCanvasElement, options: ArrowOptions) {
   const padding = options.padding ?? DEFAULT_PADDING
   const strokeWidth = options.strokeWidth ?? DEFAULT_STROKE_WIDTH
   const tipSize = options.tipSize ?? DEFAULT_TIP_SIZE
-  const curveX = typeof options.curveY === 'number' ? options.curveY - minX : 0
-  const curveY = typeof options.curveY === 'number' ? options.curveY - minY : 0
+  const tipAngle = options.tipAngle ?? DEFAULT_TIP_ANGLE
+  const tipOffset = options.tipOffset ?? DEFAULT_TIP_OFFSET
+  const cap = options.cap ?? DEFAULT_CAP
+  const offset = padding - strokeWidth / 2
+  const hasCurve = typeof options.curveX === 'number' && typeof options.curveY === 'number'
+  const curveX = hasCurve ? options.curveX! - minX + offset : 0
+  const curveY = hasCurve ? options.curveY! - minY + offset : 0
 
-  const innerWidth = maxX - minX
-  const innerHeight = maxY - minY
-  const width = innerWidth + 2 * padding
-  const height = innerHeight + 2 * padding
-  const aX = options.fromX - minX + padding - strokeWidth / 2
-  const aY = options.fromY - minY + padding - strokeWidth / 2
-  const bX = options.toX - minX + padding - strokeWidth / 2
-  const bY = options.toY - minY + padding - strokeWidth / 2
+  const width = maxX - minX + 2 * padding
+  const height = maxY - minY + 2 * padding
+  const aX = options.fromX - minX + offset
+  const aY = options.fromY - minY + offset
+  const bX = options.toX - minX + offset
+  const bY = options.toY - minY + offset
   // Arrow tip
-  const angle = Math.atan2(bY - aY - curveY * innerHeight, bX - aX - curveX * innerWidth)
-  const cX = bX + tipSize * Math.cos(angle + ARROW_ANGLE)
-  const cY = bY + tipSize * Math.sin(angle + ARROW_ANGLE)
-  const dX = bX + tipSize * Math.cos(angle - ARROW_ANGLE)
-  const dY = bY + tipSize * Math.sin(angle - ARROW_ANGLE)
+  const angle = Math.atan2(bY - aY - curveY, bX - aX - curveX)
+  const cX = bX + tipSize * Math.cos(angle + tipAngle + tipOffset)
+  const cY = bY + tipSize * Math.sin(angle + tipAngle + tipOffset)
+  const dX = bX + tipSize * Math.cos(angle - tipAngle + tipOffset)
+  const dY = bY + tipSize * Math.sin(angle - tipAngle + tipOffset)
 
   canvas.width = width * dpr
   canvas.height = height * dpr
@@ -45,20 +49,22 @@ function handleCanvas(canvas: HTMLCanvasElement, options: ArrowOptions) {
   canvas.style.left = `${minX - padding}px`
   canvas.style.width = `${width}px`
   canvas.style.height = `${height}px`
-  canvas.style.border = '1px solid lightgrey'
+  // canvas.style.border = '1px solid lightgrey'
 
   _.scale(dpr, dpr)
 
   /* ---
-    Draw
+  Draw
   --- */
   _.strokeStyle = options.color ?? DEFAULT_COLOR
   _.lineWidth = strokeWidth
+  _.lineCap = cap
 
   // Arrow body
   _.beginPath()
   _.moveTo(aX, aY)
-  _.lineTo(bX, bY)
+  if (hasCurve) _.quadraticCurveTo(curveX, curveY, bX, bY)
+  else _.lineTo(bX, bY)
   _.stroke()
   // Arrow tip
   _.beginPath()

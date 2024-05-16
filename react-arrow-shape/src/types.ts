@@ -8,6 +8,9 @@ export type ArrowOptions = {
   color?: string
   strokeWidth?: number
   tipSize?: number
+  tipAngle?: number
+  tipOffset?: number
+  cap?: 'round' | 'square' | 'butt'
   padding?: number
   className?: string
   style?: React.CSSProperties

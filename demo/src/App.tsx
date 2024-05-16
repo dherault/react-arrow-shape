@@ -20,6 +20,7 @@ function App() {
         fromY={400}
         toX={800}
         toY={400}
+        strokeWidth={2}
       />
       <Arrow
         fromX={1000}
@@ -42,12 +43,16 @@ function App() {
         toY={650}
         curveX={500}
         curveY={644}
+        strokeWidth={4}
+        tipOffset={-Math.PI / 9}
       />
       <Arrow
         fromX={1200}
         fromY={650}
         toX={1000}
         toY={600}
+        strokeWidth={3}
+        color="orange"
       />
     </>
   )
