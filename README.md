@@ -15,7 +15,7 @@ npm install --save react-arrow-shape
 ## Usage
 
 ```jsx
-import ArrowShape from 'react-arrow-shape'
+import Arrow from 'react-arrow-shape'
 
 function App() {
   return (
