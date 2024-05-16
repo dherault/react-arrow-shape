@@ -44,7 +44,14 @@ function App() {
         curveX={500}
         curveY={644}
         strokeWidth={4}
-        tipOffset={-Math.PI / 9}
+      />
+      <Arrow
+        fromX={650}
+        fromY={600}
+        toX={700}
+        toY={650}
+        curveX={650}
+        curveY={650}
       />
       <Arrow
         fromX={1200}

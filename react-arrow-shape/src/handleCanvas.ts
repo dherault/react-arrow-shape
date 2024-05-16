@@ -26,8 +26,6 @@ function handleCanvas(canvas: HTMLCanvasElement, options: ArrowOptions) {
   const cap = options.cap ?? DEFAULT_CAP
   const offset = padding - strokeWidth / 2
   const hasCurve = typeof options.curveX === 'number' && typeof options.curveY === 'number'
-  const curveX = hasCurve ? options.curveX! - minX + offset : 0
-  const curveY = hasCurve ? options.curveY! - minY + offset : 0
 
   const width = maxX - minX + 2 * padding
   const height = maxY - minY + 2 * padding
@@ -35,8 +33,10 @@ function handleCanvas(canvas: HTMLCanvasElement, options: ArrowOptions) {
   const aY = options.fromY - minY + offset
   const bX = options.toX - minX + offset
   const bY = options.toY - minY + offset
+  const curveX = hasCurve ? options.curveX! - minX + offset : aX
+  const curveY = hasCurve ? options.curveY! - minY + offset : aY
   // Arrow tip
-  const angle = Math.atan2(bY - aY - curveY, bX - aX - curveX)
+  const angle = Math.atan2(bY - curveY, bX - curveX)
   const cX = bX + tipSize * Math.cos(angle + tipAngle + tipOffset)
   const cY = bY + tipSize * Math.sin(angle + tipAngle + tipOffset)
   const dX = bX + tipSize * Math.cos(angle - tipAngle + tipOffset)
